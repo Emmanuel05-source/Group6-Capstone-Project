@@ -13,9 +13,7 @@ contract DeploySubscriptionProtocol is Script {
             deployerPrivateKey = key;
         } catch {
             // Fallback to reading the active executing wallet if --private-key flag is used
-            deployerPrivateKey = msg.sender.balance > 0
-                ? uint256(0)
-                : uint256(0);
+            deployerPrivateKey = msg.sender.balance > 0 ? uint256(0) : uint256(0);
         }
 
         // Set your constructor arguments here
@@ -25,10 +23,7 @@ contract DeploySubscriptionProtocol is Script {
         // If you passed a key via terminal flag, vm.startBroadcast() handles it automatically!
         vm.startBroadcast();
 
-        SubscriptionProtocol protocol = new SubscriptionProtocol(
-            initialFee,
-            baseURI
-        );
+        SubscriptionProtocol protocol = new SubscriptionProtocol(initialFee, baseURI);
 
         vm.stopBroadcast();
 

@@ -51,7 +51,7 @@ contract SubscriptionProtocolTest is Test {
 
         assertEq(protocol.balanceOf(user1), 3);
 
-        (, , uint256 totalPeriodsPaid, , ) = protocol.getSubscription(user1);
+        (,, uint256 totalPeriodsPaid,,) = protocol.getSubscription(user1);
         assertEq(totalPeriodsPaid, 3);
     }
 
@@ -60,13 +60,8 @@ contract SubscriptionProtocolTest is Test {
         vm.prank(user1);
         protocol.subscribe{value: FEE}(1);
 
-        (
-            bool active,
-            uint256 expiresAt,
-            uint256 totalPeriodsPaid,
-            uint256 subscribedAt,
-            uint256 secondsLeft
-        ) = protocol.getSubscription(user1);
+        (bool active, uint256 expiresAt, uint256 totalPeriodsPaid, uint256 subscribedAt, uint256 secondsLeft) =
+            protocol.getSubscription(user1);
 
         assertTrue(active);
         assertEq(totalPeriodsPaid, 1);
@@ -80,8 +75,7 @@ contract SubscriptionProtocolTest is Test {
         vm.prank(user1);
         protocol.subscribe{value: FEE}(1);
 
-        SubscriptionProtocol.PaymentRecord memory record = protocol
-            .getPaymentRecord(0);
+        SubscriptionProtocol.PaymentRecord memory record = protocol.getPaymentRecord(0);
 
         assertEq(record.subscriber, user1);
         assertEq(record.periodNumber, 1);
@@ -157,7 +151,7 @@ contract SubscriptionProtocolTest is Test {
         vm.prank(user1);
         protocol.renewSubscription{value: FEE}(1);
 
-        (, uint256 expiresAt, , , ) = protocol.getSubscription(user1);
+        (, uint256 expiresAt,,,) = protocol.getSubscription(user1);
 
         assertEq(expiresAt, start + 60 days);
     }
@@ -194,7 +188,7 @@ contract SubscriptionProtocolTest is Test {
         vm.prank(user1);
         protocol.renewSubscription{value: FEE}(1);
 
-        (, , uint256 totalPeriodsPaid, , ) = protocol.getSubscription(user1);
+        (,, uint256 totalPeriodsPaid,,) = protocol.getSubscription(user1);
         assertEq(totalPeriodsPaid, 2);
     }
 
@@ -347,7 +341,7 @@ contract SubscriptionProtocolTest is Test {
 
         // FIXED: Since .call returns a boolean instead of breaking execution,
         // we check that the call data returns success as false.
-        (bool success, ) = address(protocol).call{value: 1 ether}("");
+        (bool success,) = address(protocol).call{value: 1 ether}("");
         assertFalse(success);
     }
 
